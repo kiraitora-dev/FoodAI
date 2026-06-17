@@ -6,7 +6,11 @@ from app.core.config import settings
 class AIClient:
     def __init__(self) -> None:
         self.model = settings.OPENAI_MODEL
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+        self.client = (
+            AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+            if settings.OPENAI_API_KEY
+            else None
+        )
 
     async def complete(self, system_prompt: str, user_prompt: str) -> str:
         if self.client is None:

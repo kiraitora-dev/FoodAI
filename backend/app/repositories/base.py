@@ -18,7 +18,9 @@ class BaseRepository(Generic[ModelT]):
         return await self.session.get(self.model, entity_id)
 
     async def list(self, limit: int = 100, offset: int = 0) -> list[ModelT]:
-        result = await self.session.execute(select(self.model).limit(limit).offset(offset))
+        result = await self.session.execute(
+            select(self.model).limit(limit).offset(offset),
+        )
         return list(result.scalars().all())
 
     async def add(self, entity: ModelT) -> ModelT:

@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.category import Category
 from app.models.user import User
 from app.repositories.categories import CategoryRepository
-from app.services.restaurants import RestaurantService
 from app.schemas.category import CategoryCreate
+from app.services.restaurants import RestaurantService
 
 
 class CategoryService:
@@ -22,6 +22,16 @@ class CategoryService:
         await self.session.commit()
         return category
 
-    async def list_for_restaurant(self, owner: User, restaurant_id: UUID, limit: int = 100, offset: int = 0) -> list[Category]:
+    async def list_for_restaurant(
+        self,
+        owner: User,
+        restaurant_id: UUID,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[Category]:
         await self.restaurants.get_owned(owner, restaurant_id)
-        return await self.categories.list_for_restaurant(restaurant_id, limit=limit, offset=offset)
+        return await self.categories.list_for_restaurant(
+            restaurant_id,
+            limit=limit,
+            offset=offset,
+        )

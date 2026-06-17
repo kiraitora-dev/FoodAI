@@ -26,7 +26,11 @@ async def list_restaurants(
     limit: int = 100,
     offset: int = 0,
 ) -> list[RestaurantRead]:
-    return await RestaurantService(session).list_for_owner(current_user, limit=limit, offset=offset)
+    return await RestaurantService(session).list_for_owner(
+        current_user,
+        limit=limit,
+        offset=offset,
+    )
 
 
 @router.get("/{restaurant_id}", response_model=RestaurantRead)

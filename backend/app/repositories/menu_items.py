@@ -11,7 +11,12 @@ class MenuItemRepository(BaseRepository[MenuItem]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, MenuItem)
 
-    async def list_for_restaurant(self, restaurant_id: UUID, limit: int = 100, offset: int = 0) -> list[MenuItem]:
+    async def list_for_restaurant(
+        self,
+        restaurant_id: UUID,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[MenuItem]:
         result = await self.session.execute(
             select(MenuItem)
             .where(MenuItem.restaurant_id == restaurant_id)

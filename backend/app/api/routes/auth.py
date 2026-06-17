@@ -1,7 +1,7 @@
-from fastapi import APIRouter
-from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
-from fastapi import Depends
+
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.dependencies.auth import CurrentUser
 from app.dependencies.database import DbSession
