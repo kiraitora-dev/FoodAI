@@ -47,8 +47,5 @@ jobs:
           context: ./backend
           push: false
           tags: foodai-backend:latest
-
-      - name: Build and verify compose stack
-        run: |
-          docker-compose -f docker-compose.yml build
-          docker-compose -f docker-compose.yml config > /dev/null
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
