@@ -11,7 +11,12 @@ class CategoryRepository(BaseRepository[Category]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, Category)
 
-    async def list_for_restaurant(self, restaurant_id: UUID, limit: int = 100, offset: int = 0) -> list[Category]:
+    async def list_for_restaurant(
+        self,
+        restaurant_id: UUID,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[Category]:
         result = await self.session.execute(
             select(Category)
             .where(Category.restaurant_id == restaurant_id)

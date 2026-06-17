@@ -23,27 +23,43 @@ class RecommendationService:
         self.menu_items = MenuItemService(session)
         self.recommendations = RecommendationRepository(session)
 
-    async def recommend(self, user: User, payload: RecommendationRequest) -> RecommendationResponse:
+    async def recommend(
+        self,
+        user: User,
+        payload: RecommendationRequest,
+    ) -> RecommendationResponse:
         items: list[RecommendedItem] = []
         if payload.restaurant_id:
-            menu_items = await self.menu_items.list_for_restaurant(user, payload.restaurant_id, limit=25)
+            menu_items = await self.menu_items.list_for_restaurant(
+                user,
+                payload.restaurant_id,
+                limit=25,
+            )
             for item in menu_items[:5]:
                 reason = "Matches availability and menu profile."
                 if payload.preferences:
-                    reason = f"Relevant to preferences: {', '.join(payload.preferences)}."
+                    reason = (
+                        f"Relevant to preferences: {', '.join(payload.preferences)}."
+                    )
                 items.append(RecommendedItem(name=item.name, reason=reason, score=0.8))
 
         if not items:
             items = [
                 RecommendedItem(
                     name="Chef's balanced plate",
-                    reason="A flexible default suggestion while menu data is being added.",
+                    reason=(
+                        "A flexible default suggestion while menu data is being "
+                        "added."
+                    ),
                     score=0.6,
                 )
             ]
 
         model = "rules"
-        summary = "FoodAI generated menu recommendations from available restaurant context."
+        summary = (
+            "FoodAI generated menu recommendations from available restaurant "
+            "context."
+        )
         if payload.prompt:
             ai_summary = await self.ai.complete(
                 "You are FoodAI, a concise restaurant recommendation assistant.",
@@ -84,4 +100,7 @@ class RecommendationService:
             "You are FoodAI, helping restaurant teams and guests with food choices.",
             payload.message,
         )
-        return ChatResponse(response=response, model=self.ai.model if self.ai.client else "rules")
+        return ChatResponse(
+            response=response,
+            model=self.ai.model if self.ai.client else "rules",
+        )

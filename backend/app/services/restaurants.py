@@ -20,16 +20,33 @@ class RestaurantService:
         await self.session.commit()
         return restaurant
 
-    async def list_for_owner(self, owner: User, limit: int = 100, offset: int = 0) -> list[Restaurant]:
-        return await self.restaurants.list_for_owner(owner.id, limit=limit, offset=offset)
+    async def list_for_owner(
+        self,
+        owner: User,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[Restaurant]:
+        return await self.restaurants.list_for_owner(
+            owner.id,
+            limit=limit,
+            offset=offset,
+        )
 
     async def get_owned(self, owner: User, restaurant_id: UUID) -> Restaurant:
         restaurant = await self.restaurants.get(restaurant_id)
         if restaurant is None or restaurant.owner_id != owner.id:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Restaurant not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Restaurant not found",
+            )
         return restaurant
 
-    async def update(self, owner: User, restaurant_id: UUID, payload: RestaurantUpdate) -> Restaurant:
+    async def update(
+        self,
+        owner: User,
+        restaurant_id: UUID,
+        payload: RestaurantUpdate,
+    ) -> Restaurant:
         restaurant = await self.get_owned(owner, restaurant_id)
         for key, value in payload.model_dump(exclude_unset=True).items():
             setattr(restaurant, key, value)

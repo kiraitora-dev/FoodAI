@@ -11,7 +11,11 @@ router = APIRouter()
 
 
 @router.post("", response_model=CategoryRead, status_code=201)
-async def create_category(payload: CategoryCreate, session: DbSession, current_user: CurrentUser) -> CategoryRead:
+async def create_category(
+    payload: CategoryCreate,
+    session: DbSession,
+    current_user: CurrentUser,
+) -> CategoryRead:
     return await CategoryService(session).create(current_user, payload)
 
 
@@ -23,4 +27,9 @@ async def list_categories(
     limit: int = 100,
     offset: int = 0,
 ) -> list[CategoryRead]:
-    return await CategoryService(session).list_for_restaurant(current_user, restaurant_id, limit=limit, offset=offset)
+    return await CategoryService(session).list_for_restaurant(
+        current_user,
+        restaurant_id,
+        limit=limit,
+        offset=offset,
+    )

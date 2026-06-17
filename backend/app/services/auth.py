@@ -20,7 +20,10 @@ class AuthService:
     async def register(self, payload: UserCreate) -> User:
         existing_user = await self.users.get_by_email(payload.email)
         if existing_user:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Email already registered",
+            )
 
         user = User(
             email=payload.email,
@@ -34,9 +37,15 @@ class AuthService:
     async def authenticate(self, email: str, password: str) -> User:
         user = await self.users.get_by_email(email)
         if not user or not verify_password(password, user.hashed_password):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials",
+            )
         if not user.is_active:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Inactive user",
+            )
         return user
 
     def issue_tokens(self, user: User) -> Token:

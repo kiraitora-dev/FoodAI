@@ -31,16 +31,28 @@ class MenuItemService:
         offset: int = 0,
     ) -> list[MenuItem]:
         await self.restaurants.get_owned(owner, restaurant_id)
-        return await self.menu_items.list_for_restaurant(restaurant_id, limit=limit, offset=offset)
+        return await self.menu_items.list_for_restaurant(
+            restaurant_id,
+            limit=limit,
+            offset=offset,
+        )
 
     async def get_owned(self, owner: User, item_id: UUID) -> MenuItem:
         item = await self.menu_items.get(item_id)
         if item is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu item not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Menu item not found",
+            )
         await self.restaurants.get_owned(owner, item.restaurant_id)
         return item
 
-    async def update(self, owner: User, item_id: UUID, payload: MenuItemUpdate) -> MenuItem:
+    async def update(
+        self,
+        owner: User,
+        item_id: UUID,
+        payload: MenuItemUpdate,
+    ) -> MenuItem:
         item = await self.get_owned(owner, item_id)
         for key, value in payload.model_dump(exclude_unset=True).items():
             setattr(item, key, value)

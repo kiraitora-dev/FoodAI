@@ -11,7 +11,12 @@ class RestaurantRepository(BaseRepository[Restaurant]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, Restaurant)
 
-    async def list_for_owner(self, owner_id: UUID, limit: int = 100, offset: int = 0) -> list[Restaurant]:
+    async def list_for_owner(
+        self,
+        owner_id: UUID,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[Restaurant]:
         result = await self.session.execute(
             select(Restaurant)
             .where(Restaurant.owner_id == owner_id)
