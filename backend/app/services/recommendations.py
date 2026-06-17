@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.recommendation import Recommendation
 from app.models.user import User
+from app.repositories.recommendations import RecommendationRepository
 from app.schemas.recommendation import (
     ChatRequest,
     ChatResponse,
@@ -19,6 +21,7 @@ class RecommendationService:
         self.session = session
         self.ai = AIClient()
         self.menu_items = MenuItemService(session)
+        self.recommendations = RecommendationRepository(session)
 
     async def recommend(self, user: User, payload: RecommendationRequest) -> RecommendationResponse:
         items: list[RecommendedItem] = []
@@ -48,6 +51,20 @@ class RecommendationService:
             )
             summary = ai_summary
             model = self.ai.model if self.ai.client else "rules"
+
+        recommendation = Recommendation(
+            user_id=user.id,
+            restaurant_id=payload.restaurant_id,
+            prompt=payload.prompt or "",
+            response={
+                "summary": summary,
+                "items": [item.model_dump() for item in items],
+                "model": model,
+            },
+            model=model,
+        )
+        await self.recommendations.add(recommendation)
+        await self.session.commit()
 
         return RecommendationResponse(summary=summary, items=items, model=model)
 
