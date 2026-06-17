@@ -29,8 +29,14 @@ jobs:
       - name: Lint
         run: ruff check app tests
 
+      - name: Debug info
+        run: |
+          python --version
+          python -c "import sys; print('Python path:', sys.path)"
+          python -c "import pytest; print('pytest version:', pytest.__version__)"
+
       - name: Test
-        run: pytest -q
+        run: pytest -vv --tb=short tests/test_health.py
 
   docker:
     runs-on: ubuntu-latest
