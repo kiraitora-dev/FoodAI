@@ -31,3 +31,24 @@ jobs:
 
       - name: Test
         run: pytest -q
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: false
+          tags: foodai-backend:latest
+
+      - name: Build and verify compose stack
+        run: |
+          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yml config > /dev/null

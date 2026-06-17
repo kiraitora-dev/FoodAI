@@ -2,22 +2,24 @@ __pycache__/
 *.py[cod]
 *.pyo
 .pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
 .venv/
 venv/
 ENV/
+
+# Environment
 .env
 .env.*
-build/
+
+# Build artifacts
 dist/
+build/
 *.egg-info/
-.git
-.gitignore
-**/__pycache__
-**/*.pyc
-**/*.pyo
-**/*.pyd
-__pypackages__/
-*.swp
+
+# OS files
 .DS_Store
-.vscode/
-.idea/
+Thumbs.db
